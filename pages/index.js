@@ -11,7 +11,7 @@ import { closedFistNoFingersGesture } from "../utilites/closedFistNoFingersGestu
 import { moutzaGesture } from "../utilites/moutzaGesture";
 
 import React, { useRef, useEffect, useState } from "react";
-import CaptchaBox from "@/components/captchabox";
+
 export default function Home() {
   const [webcamLoading, setWebcamLoading] = useState(false);
   const [startDetection, setStartDetection] = useState(false);
