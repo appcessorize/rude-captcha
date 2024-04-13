@@ -1,117 +1,323 @@
-import Image from "next/image";
-import { Inter } from "next/font/google";
+import * as fp from "fingerpose";
+// import * as tf from "@tensorflow/tfjs";
+import * as tf from "@tensorflow/tfjs-backend-webgl";
+import * as handpose from "@tensorflow-models/handpose";
+import { middleFingerUpGesture } from "../utilites/middleFingerUpGesture";
+import { vSign } from "../utilites/vSign";
+import { thumbsUpGesture } from "../utilites/thumbsUpGesture";
+import { thumbsDownGesture } from "../utilites/thumbsDownGesture";
+import { closedFistGesture } from "../utilites/closedFistGesture";
+import { closedFistNoFingersGesture } from "../utilites/closedFistNoFingersGesture";
+import { moutzaGesture } from "../utilites/moutzaGesture";
 
-const inter = Inter({ subsets: ["latin"] });
-
+import React, { useRef, useEffect, useState } from "react";
+import CaptchaBox from "@/components/captchabox";
 export default function Home() {
-  return (
-    <main
-      className={`flex min-h-screen flex-col items-center justify-between p-24 ${inter.className}`}
-    >
-      <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">pages/index.js</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
+  const [webcamLoading, setWebcamLoading] = useState(false);
+  const [startDetection, setStartDetection] = useState(false);
+  const [isDetectionActive, setIsDetectionActive] = useState(true);
+  const [net, setNet] = useState(null);
 
-      <div className="relative flex place-items-center before:absolute before:h-[300px] before:w-full sm:before:w-[480px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-full sm:after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700/10 after:dark:from-sky-900 after:dark:via-[#0141ff]/40 before:lg:h-[360px]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
+  const webcamRef = useRef(null);
+  useEffect(() => {
+    if (net !== null) {
+      // Check if the browser supports the getUserMedia API
+
+      setWebcamLoading(true);
+
+      if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        // Request access to the webcam
+
+        navigator.mediaDevices
+          .getUserMedia({
+            video: true,
+            // facingMode: "user", // Uses the front camera
+            frameRate: { ideal: 15, max: 30 },
+            width: { ideal: 640 }, // Adjust as needed
+            height: { ideal: 1138 }, // 640 * (16/9) = ~1138 for a 9:16 aspect ratio
+            aspectRatio: { ideal: 9 / 16 },
+            // video: true,
+            // frameRate: { ideal: 15, max: 30 },
+            // width: { ideal: 640 },
+            // height: { ideal: 360 },
+
+            // aspectRatio: { ideal: 1.777777778 },
+          })
+          .then((stream) => {
+            // runHandpose();
+            setWebcamLoading(false);
+            // If access is granted, set the video source to the webcam stream
+            if (webcamRef.current) {
+              webcamRef.current.srcObject = stream;
+            }
+          })
+          .catch((err) => {
+            console.error("Error accessing the webcam:", err);
+          });
+      }
+    }
+  }, [net]);
+
+  useEffect(() => {
+    const loadModel = async () => {
+      try {
+        const loadedNet = await handpose.load(); // Load the model
+        setNet(loadedNet); // Store the loaded model in state
+        console.log("Handpose model loaded.");
+      } catch (error) {
+        console.error("Failed to load the Handpose model:", error);
+      }
+    };
+
+    loadModel();
+  }, []);
+
+  const runHandpose = async (net) => {
+    setInterval(() => {
+      detect(net);
+    }, 300);
+  };
+
+  const detect = async (net) => {
+    if (webcamRef.current && net && isDetectionActive) {
+      const video = webcamRef.current;
+      const hand = await net.estimateHands(video);
+
+      if (hand.length > 0) {
+        const GE = new fp.GestureEstimator([
+          vSign,
+          middleFingerUpGesture,
+          thumbsUpGesture,
+          thumbsDownGesture,
+          closedFistGesture,
+          closedFistNoFingersGesture,
+          moutzaGesture,
+        ]);
+
+        const gesture = await GE.estimate(hand[0].landmarks, 4);
+        if (gesture.gestures !== undefined && gesture.gestures.length > 0) {
+          const sortPredictions = gesture.gestures.sort(
+            (a, b) => b.score - a.score
+          );
+
+          setAnswer(sortPredictions[0].name);
+          if (sortPredictions[1]) {
+            setAnswer2(sortPredictions[1].name);
+          }
+          console.log("calling");
+          // Call handleGestureRecognition here after setting answer and answer2
+          handleGestureRecognition(
+            sortPredictions[0].name,
+            sortPredictions[1].name
+          );
+        }
+      } else {
+        setAnswer(0);
+        setAnswer2(0);
+      }
+    }
+  };
+  const urls = [
+    {
+      description: "V Sign",
+      url: "/vSign.png",
+      GestureDescription: "vSign",
+      blurb:
+        "The obscene V sign, fingers up with palm inward, stems from medieval archers as defiance, now a rude gesture in the UK.",
+    },
+    {
+      description: "Thumbs Down",
+      url: "/thumbsDown.png",
+      GestureDescription: "thumbs_down",
+      blurb:
+        "The thumbs-down gesture, signifying disapproval or rejection, traces back to ancient Rome's gladiatorial combats, widely recognized across cultures today.",
+    },
+
+    {
+      description: "Thumbs Up",
+      url: "/thumbsUp.png",
+      GestureDescription: "thumbs_up",
+      blurb:
+        "Traditionally positive, the thumbs-up gesture can be obscene in certain cultures like Iran and Greece, symbolizing a disrespectful insult.",
+    },
+    {
+      description: "Moutza",
+      url: "/moutza.jpg",
+      GestureDescription: "moutza",
+      blurb:
+        "The Moutza, spreading open the fingers on one hand, hails from ancient Greece, signifying insult, commonly used in the Balkans.",
+    },
+    {
+      description: "Middle Finger",
+      url: "/midfingercar.jpg",
+      GestureDescription: "middle_finger_up",
+      blurb:
+        "The middle finger gesture, dating back to ancient Greece, symbolizes insult or anger, universally recognized as a sign of disrespect.",
+    },
+    {
+      description: "Wanker",
+      url: "https://media.istockphoto.com/id/182912888/photo/obscene-anti-social-behaviour.jpg?s=612x612&w=is&k=20&c=esk7pC1fVO4eKPakEatwYi-0wi45cj_mEGPMQ3szERM=",
+      GestureDescription: "closed_fist",
+      blurb:
+        'The "wanker" gesture, involving a fist-and-forearm motion, originates from British slang, signifying masturbation and used to mock or insult someone.',
+    },
+    {
+      description: "Bras d'honneur",
+      url: "/french.jpg",
+      GestureDescription: "closed_fist",
+      blurb:
+        "The Bras d'honneur or 'the Italian salute', originated in France, it's an insult akin to up yours with diverse cultural meanings.",
+    },
+    {
+      description: "Middle Finger",
+      url: "/midfinger.jpg",
+      GestureDescription: "middle_finger_up",
+      blurb:
+        "The middle finger gesture, dating back to ancient Greece, symbolizes insult or anger, universally recognized as a sign of disrespect.",
+    },
+    {
+      description: "Fig",
+      url: "/thumbfist.jpg",
+      GestureDescription: "closed_fist",
+      blurb:
+        "Originating from Roman times, the obscene fig gesture, thumb between fingers, signifies contempt, mainly used in Turkey and Russia.",
+    },
+    {
+      description: "Middle Finger",
+      url: "/midfingnews.jpg",
+      GestureDescription: "middle_finger_up",
+      blurb:
+        "The middle finger gesture, dating back to ancient Greece, symbolizes insult or anger, universally recognized as a sign of disrespect.",
+    },
+  ];
+  const [i, setI] = useState(0);
+  const [answer, setAnswer] = useState("no answer yet");
+  const [answer2, setAnswer2] = useState("no answer2 yet");
+  const [showTick, setShowTick] = useState(false);
+
+  const handleGestureRecognition = (answer, answer2) => {
+    console.log(
+      "called handleGestureRecognition",
+      urls[i].GestureDescription,
+      answer,
+      answer2
+    );
+    if (
+      urls[i].GestureDescription === answer ||
+      urls[i].GestureDescription === answer2
+    ) {
+      console.log("success");
+      setShowTick(true); // Show the tick mark
+
+      // Wait for 1.5 seconds before hiding the tick and moving to the next gesture
+      setTimeout(() => {
+        const nextIndex = i < urls.length - 1 ? i + 1 : 0;
+        setShowTick(false); // Hide the tick mark
+
+        // Move to the next gesture or reset
+
+        setI(nextIndex);
+
+        // Reset answers
+        setAnswer("no answer yet");
+        setAnswer2("no answer2 yet");
+
+        // Optionally, re-enable detection here if you disabled it earlier
+        setIsDetectionActive(true);
+      }, 1500);
+    }
+  };
+  return (
+    <main className="h-screen w-screen flex flex-col md:flex-row bg-gray-100">
+      <h1 className="absolute left-5 top-5 text-3xl   ">
+        rude<span className="">Captcha</span>
+      </h1>
+      <p className="absolute right-5 top-5 text-sm ">
+        Answer: 1:{answer} 2:{answer2}
+      </p>
+      {net && <p className="absolute right-5 bottom-5 text-sm ">net ready</p>}
+      {net &&
+        (startDetection ? (
+          <></>
+        ) : (
+          <button
+            onClick={() => {
+              runHandpose(net);
+              setStartDetection(true);
+            }}
+            className="bg-red-500 p-2 text-sm text-white z-50 rounded-lg absolute left-5 bottom-5 "
+          >
+            Start detect
+          </button>
+        ))}
+      <div className=" md:flex-1 h-1/3 md:h-full  ">
+        <p className="z-0 absolute top-10 left-50">Video loading</p>
+
+        <video
+          ref={webcamRef}
+          autoPlay
+          playsInline
+          muted
+          className=" w-full h-full object-cover z-100 "
         />
       </div>
-
-      <div className="mb-32 grid text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Docs{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Learn{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Templates{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Discover and deploy boilerplate example Next.js&nbsp;projects.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Deploy{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50 text-balance`}>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
+      <div className="flex-1   flex items-center justify-center">
+        <div className="max-w-sm min-h-[calc(50%-56px)] mx-auto bg-white shadow-lg rounded-lg overflow-hidden">
+          {showTick && (
+            <div className="absolute inset-0 z-20 flex items-center justify-center">
+              <div className="bg-white bg-opacity-50 backdrop-blur-lg rounded-full w-48 h-48 flex items-center justify-center text-7xl text-green-500">
+                ✓
+              </div>
+            </div>
+          )}
+          <div className="relative h-64">
+            <img
+              src={urls[i].url}
+              alt={urls[i].description}
+              className="absolute top-0 left-0 w-full h-full object-cover"
+            />
+            <div className="absolute top-0 left-0 w-full h-full bg-transparent grid grid-cols-4 grid-rows-4 border border-transparent z-10">
+              {Array.from({ length: 16 }).map((_, idx) => (
+                <div
+                  key={idx}
+                  className="border border-white"
+                  style={{ minHeight: "1px" }}
+                />
+              ))}
+            </div>
+          </div>
+          <div className="p-4">
+            <h5 className="text-lg font-bold mb-2">{urls[i].description}</h5>
+            <p
+              className="text-gray-700 text-base overflow-hidden"
+              style={{
+                display: "-webkit-box",
+                WebkitBoxOrient: "vertical",
+                WebkitLineClamp: 3,
+              }}
+            >
+              {urls[i].blurb || <div className="h-14"></div>}
+            </p>
+          </div>
+          <div className="px-4 pt-4 pb-2 flex justify-end space-x-3">
+            <button
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+              onClick={() => {
+                i < urls.length - 1 ? setI(i + 1) : setI(0);
+              }}
+            >
+              Skip
+            </button>
+            <button
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+              onClick={() => {
+                i < urls.length - 1 ? setI(i + 1) : setI(0);
+              }}
+            >
+              Start
+            </button>
+          </div>
+        </div>
       </div>
     </main>
   );
