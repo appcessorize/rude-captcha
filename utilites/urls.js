@@ -11,7 +11,7 @@ export const urls = [
     url: "/thumbsDown.png",
     GestureDescription: "thumbs_down",
     blurb:
-      "The thumbs-down gesture, signifying disapproval or rejection, traces back to ancient Rome's gladiatorial combat.",
+      "The thumbs-down gesture, signifying disapproval or rejection, traces back to ancient Rome's gladiatorial contests.",
   },
 
   {
