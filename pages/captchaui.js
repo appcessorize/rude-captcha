@@ -12,8 +12,9 @@ import { moutzaGesture } from "../utilites/moutzaGesture";
 import Image from "next/image";
 import React, { useRef, useEffect, useState } from "react";
 import LoadingSpinner from "@/components/loadingSpinner";
+import APItems from "@/components/absolutelypositioneditems";
 
-export default function Home() {
+export default function CapatchaUI() {
   const [webcamLoading, setWebcamLoading] = useState(true);
   const [startDetection, setStartDetection] = useState(false);
   const [isDetectionActive, setIsDetectionActive] = useState(true);
@@ -111,6 +112,14 @@ export default function Home() {
               sortPredictions[0].name,
               sortPredictions[1].name
             );
+
+            // if (sortPredictions[0].name === urls[i].GestureDescription) {
+            //   alert("success");
+            //   const nextIndex = i < urls.length - 1 ? i + 1 : 0;
+            //   console.log("nextIndex", nextIndex, i);
+            //   setI(nextIndex);
+            //   console.log(i);
+            // }
           } else {
             setAnswer2("no second answer"); // or any other default/fallback value
             handleGestureRecognition(
@@ -201,103 +210,102 @@ export default function Home() {
     },
   ];
   const [i, setI] = useState(0);
+  const iRef = useRef(i);
+  useEffect(() => {
+    iRef.current = i; // Keep the ref current with the state
+  }, [i]);
+
   const [answer, setAnswer] = useState("no answer yet");
   const [answer2, setAnswer2] = useState("no answer2 yet");
   const [showTick, setShowTick] = useState(false);
 
+  //   const handleGestureRecognition = (answer, answer2) => {
+  //     console.log(
+  //       "called handleGestureRecognition",
+  //       urls[i].GestureDescription,
+  //       answer,
+  //       answer2
+  //     );
+  //     if (
+  //       urls[i].GestureDescription === answer ||
+  //       urls[i].GestureDescription === answer2
+  //     ) {
+  //       console.log("success");
+  //       //   setShowTick(true); // Show the tick mark
+
+  //       // Wait for 1.5 seconds before hiding the tick and moving to the next gesture
+
+  //       //   const nextIndex = i < urls.length - 1 ? i + 1 : 0;
+  //       // Hide the tick mark
+
+  //       // Move to the next gesture or reset
+
+  //       //   setI(nextIndex);
+  //       //   setI(i + 1);
+  //       // Reset answers
+  //       //   setAnswer("no answer yet");
+  //       //   setAnswer2("no answer2 yet");
+
+  //       // Optionally, re-enable detection here if you disabled it earlier
+  //       //   setIsDetectionActive(true);
+  //     }
+  //   };
   const handleGestureRecognition = (answer, answer2) => {
-    console.log(
-      "called handleGestureRecognition",
-      urls[i].GestureDescription,
-      answer,
-      answer2
-    );
     if (
-      urls[i].GestureDescription === answer ||
-      urls[i].GestureDescription === answer2
+      urls[iRef.current].GestureDescription === answer ||
+      urls[iRef.current].GestureDescription === answer2
     ) {
       console.log("success");
-      setShowTick(true); // Show the tick mark
 
-      // Wait for 1.5 seconds before hiding the tick and moving to the next gesture
-      setTimeout(() => {
-        const nextIndex = i < urls.length - 1 ? i + 1 : 0;
-        setShowTick(false); // Hide the tick mark
-
-        // Move to the next gesture or reset
-
-        setI(nextIndex);
-
-        // Reset answers
-        setAnswer("no answer yet");
-        setAnswer2("no answer2 yet");
-
-        // Optionally, re-enable detection here if you disabled it earlier
-        setIsDetectionActive(true);
-      }, 1500);
+      const nextIndex = iRef.current < urls.length - 1 ? iRef.current + 1 : 0;
+      setI(nextIndex);
+      console.log("Index updated to:", nextIndex);
     }
   };
   return (
-    <main className="h-screen w-screen flex flex-col md:flex-row bg-gray-100">
-      <div className=" md:flex-1 h-1/3 md:h-full  relative ">
-        {webcamLoading && (
-          <div className=" absolute inset-0 flex flex-col items-center justify-center">
-            <p>Webcam loading ...</p>
-            <LoadingSpinner />
-          </div>
-        )}
-        <video
-          ref={webcamRef}
-          autoPlay
-          playsInline
-          muted
-          className=" w-full h-full object-cover z-100 "
-        />
-      </div>
-
-      <h1 className="absolute left-5 top-5 text-3xl   ">
-        rude<span className="">Captcha</span>
-      </h1>
-      <p className="absolute right-5 top-5 text-sm ">
-        Answer: 1:{answer} 2:{answer2} needed:{urls[i].GestureDescription}
-      </p>
-      {net && <p className="absolute right-5 bottom-5 text-sm ">net ready</p>}
-      {net &&
-        (startDetection ? (
-          <></>
-        ) : (
-          <button
-            onClick={() => {
-              runHandpose(net);
-              setStartDetection(true);
-            }}
-            className="bg-red-500 p-2 text-sm text-white z-50 rounded-lg absolute left-5 bottom-5 "
+    <main className="h-screen w-screen flex flex-col md:flex-row bg-white">
+      <div className="flex-1 flex items-center justify-center">
+        <div className="max-w-sm mx-auto shadow-lg rounded-lg overflow-hidden ">
+          <div
+            className="flex justify-between items-center p-4 bg-blue-500"
+            style={{ minHeight: "4rem" }}
           >
-            Start detect
-          </button>
-        ))}
-      <div className="flex-1   flex items-center justify-center">
-        <div className="max-w-sm min-h-[calc(50%-56px)] mx-auto bg-white shadow-lg rounded-lg overflow-hidden">
-          {showTick && (
-            <div className="absolute inset-0 z-20 flex items-center justify-center">
-              <div className="bg-white bg-opacity-50 backdrop-blur-lg rounded-full w-48 h-48 flex items-center justify-center text-7xl text-green-500">
-                ✓
-              </div>
+            <div>
+              <h4 className="text-gray-100 text-sm">
+                {webcamLoading ? "Loading..." : "Make the Gesture"}
+              </h4>
+              <h4 className="text-xl font-bold text-white">
+                {webcamLoading ? "RudeCaptcha" : urls[i].description}
+              </h4>
             </div>
-          )}
-          <div className="relative h-64">
-            {/* <img
-              src={urls[i].url}
-              alt={urls[i].description}
-              className="absolute top-0 left-0 w-full h-full object-cover"
-            /> */}
-            <Image
-              src={urls[i].url}
-              alt={urls[i].description}
-              layout="fill"
-              objectFit="cover"
-              // placeholder="blur"
-              // blurDataURL={someLowResDataURL} // optional: only if you have a low-res version for the blur effect
+            {webcamLoading ? (
+              <div className="h-24 " />
+            ) : (
+              <img
+                src={urls[i].url}
+                alt={urls[i].description}
+                className="h-24 border-white border-2"
+              />
+            )}
+          </div>
+
+          {/* Existing video and grid overlay */}
+          <div className="relative h-64 bg-gray-100">
+            {webcamLoading && (
+              <div className="h-full flex flex-col items-center justify-center ">
+                <h5>LOADING...</h5>
+                <h5>Initializing webcam...</h5>
+                <h5>Loading AI model...</h5>
+                <LoadingSpinner />
+              </div>
+            )}
+
+            <video
+              ref={webcamRef}
+              autoPlay
+              playsInline
+              muted
+              className="w-full h-full object-cover z-100"
             />
             <div className="absolute top-0 left-0 w-full h-full bg-transparent grid grid-cols-4 grid-rows-4 border border-transparent z-10">
               {Array.from({ length: 16 }).map((_, idx) => (
@@ -309,8 +317,9 @@ export default function Home() {
               ))}
             </div>
           </div>
+
+          {/* Content block */}
           <div className="p-4">
-            <h5 className="text-lg font-bold mb-2">{urls[i].description}</h5>
             <p
               className="text-gray-700 text-base overflow-hidden"
               style={{
@@ -319,9 +328,14 @@ export default function Home() {
                 WebkitLineClamp: 3,
               }}
             >
-              {urls[i].blurb || <div className="h-14"></div>}
+              {webcamLoading
+                ? "Sick of having to prove to a robot you're human. AI isn't allowed to be offensive so won't be able to break this Captcha."
+                : urls[i].blurb || <div className="h-14"></div>}
+              {/* //   {urls[i].blurb || <div className="h-14"></div>} */}
             </p>
           </div>
+
+          {/* Buttons */}
           <div className="px-4 pt-4 pb-2 flex justify-end space-x-3">
             <button
               className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
@@ -342,6 +356,36 @@ export default function Home() {
           </div>
         </div>
       </div>
+      <APItems
+        answer={answer}
+        answer2={answer2}
+        startDetection={startDetection}
+        runHandpose={runHandpose}
+        net={net}
+        setStartDetection={setStartDetection}
+        urls={urls}
+        i={i}
+      />
+
+      {/* <p className="absolute bottom-10 left-48 ">
+        {isDetectionActive ? "detection on" : "detection off"}
+      </p> */}
+
+      {/* {isDetectionActive ? (
+        <button
+          className="bg-red-100 p-8 w-24 h-24 absolute bottom-10 left-24 "
+          onClick={() => setIsDetectionActive(false)}
+        >
+          STOP
+        </button>
+      ) : (
+        <button
+          className="bg-red-100 p-8 w-24 h-24 absolute bottom-10 left-24"
+          onClick={() => setIsDetectionActive(true)}
+        >
+          START
+        </button>
+      )} */}
     </main>
   );
 }
