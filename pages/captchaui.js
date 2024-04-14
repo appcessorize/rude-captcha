@@ -305,8 +305,8 @@ export default function CapatchaUI() {
             />
 
             <p>
-              3. Sometimes the AI can't detect it straight away so move your
-              hand a bit.
+              3. Sometimes the AI can&apos;t detect it straight away so move
+              your hand a bit.
             </p>
             <p>4. You will be asked to perform a new gesture</p>
             <h2>FAQ</h2>
