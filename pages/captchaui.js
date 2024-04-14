@@ -319,6 +319,8 @@ export default function CapatchaUI() {
               It uses the Tensorflow.js and the handpose and fingerpose
               libraries
             </p>
+
+            <h2>Share</h2>
             <h2>Contact</h2>
             <p>
               Got a question or comment? Contact me via the widget in the bottom
@@ -483,6 +485,17 @@ export default function CapatchaUI() {
               className={`text-white font-bold py-2 px-2 rounded ${
                 showTick ? "text-white" : "text-gray-400 hover:bg-blue-50"
               }`}
+              onClick={() => alert("Share not implemented yet")}
+            >
+              <span className="material-icons text-gray-500 text-2xl">
+                ios_share
+              </span>
+            </button>
+            <button
+              disabled={showTick}
+              className={`text-white font-bold py-2 px-2 rounded ${
+                showTick ? "text-white" : "text-gray-400 hover:bg-blue-50"
+              }`}
               onClick={() => {
                 i < urls.length - 1 ? setI(i + 1) : setI(0);
               }}
@@ -494,7 +507,7 @@ export default function CapatchaUI() {
           </div>
         </div>
       </div>
-      <APItems
+      {/* <APItems
         answer={answer}
         answer2={answer2}
         startDetection={startDetection}
@@ -503,20 +516,7 @@ export default function CapatchaUI() {
         setStartDetection={setStartDetection}
         urls={urls}
         i={i}
-      />
-      <div className="absolute bottom-10 left-24 z-1000">
-        <p>
-          {isDetectionActiveRef.current === true
-            ? "detection on"
-            : "detection off"}
-        </p>
-        <button
-          onClick={toggleDetection}
-          className="bg-red-100 px-8 py-4 rounded  "
-        >
-          {isDetectionActiveRef.current ? "STOP" : "START"}
-        </button>
-      </div>
+      /> */}
     </main>
   );
 }
