@@ -263,7 +263,7 @@ export default function CapatchaUI() {
     }
   };
   return (
-    <main className="h-screen w-screen flex flex-col md:flex-row bg-white">
+    <main className="h-screen w-screen flex flex-col md:flex-row bg-white p-4 md:p-0">
       <div className="flex-1 flex items-center justify-center">
         <div className="max-w-sm mx-auto shadow-lg rounded-lg overflow-hidden ">
           <div

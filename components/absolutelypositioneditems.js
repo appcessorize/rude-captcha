@@ -10,7 +10,7 @@ const APItems = ({
 }) => {
   return (
     <>
-      <h1 className="absolute left-5 top-5 text-3xl   ">
+      <h1 className="absolute left-5 top-5 text-3xl  hidden md:flex  ">
         rude<span className="">Captcha</span>
       </h1>
       <p className="absolute right-5 top-5 text-sm ">
