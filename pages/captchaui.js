@@ -11,14 +11,19 @@ import { closedFistNoFingersGesture } from "../utilites/closedFistNoFingersGestu
 import { moutzaGesture } from "../utilites/moutzaGesture";
 import Image from "next/image";
 import React, { useRef, useEffect, useState } from "react";
-import LoadingSpinner from "@/components/loadingSpinner";
+// import LoadingSpinner from "@/components/loadingSpinner";
 import APItems from "@/components/absolutelypositioneditems";
 
 export default function CapatchaUI() {
   const [webcamLoading, setWebcamLoading] = useState(true);
   const [startDetection, setStartDetection] = useState(false);
-  const [isDetectionActive, setIsDetectionActive] = useState(true);
+  const [showTick, setShowTick] = useState(false);
+  const isDetectionActiveRef = useRef(true);
   const [net, setNet] = useState(null);
+  const toggleDetection = () => {
+    isDetectionActiveRef.current = !isDetectionActiveRef.current;
+    console.log("Detection toggled to:", isDetectionActiveRef.current);
+  };
 
   const webcamRef = useRef(null);
   useEffect(() => {
@@ -81,7 +86,7 @@ export default function CapatchaUI() {
   };
 
   const detect = async (net) => {
-    if (webcamRef.current && net && isDetectionActive) {
+    if (webcamRef.current && net) {
       const video = webcamRef.current;
       const hand = await net.estimateHands(video);
 
@@ -217,8 +222,7 @@ export default function CapatchaUI() {
 
   const [answer, setAnswer] = useState("no answer yet");
   const [answer2, setAnswer2] = useState("no answer2 yet");
-  const [showTick, setShowTick] = useState(false);
-
+  const [showFaq, setShowFaq] = useState(false);
   //   const handleGestureRecognition = (answer, answer2) => {
   //     console.log(
   //       "called handleGestureRecognition",
@@ -251,19 +255,131 @@ export default function CapatchaUI() {
   //     }
   //   };
   const handleGestureRecognition = (answer, answer2) => {
-    if (
-      urls[iRef.current].GestureDescription === answer ||
-      urls[iRef.current].GestureDescription === answer2
-    ) {
-      console.log("success");
-
-      const nextIndex = iRef.current < urls.length - 1 ? iRef.current + 1 : 0;
-      setI(nextIndex);
-      console.log("Index updated to:", nextIndex);
+    if (isDetectionActiveRef.current) {
+      if (
+        urls[iRef.current].GestureDescription === answer ||
+        urls[iRef.current].GestureDescription === answer2
+      ) {
+        toggleDetection();
+        setShowTick(true);
+        console.log("success");
+        setTimeout(() => {
+          setShowTick(false);
+          toggleDetection(); // This call re-enables detection
+          console.log("Detection re-enabled.");
+        }, 2000);
+        const nextIndex = iRef.current < urls.length - 1 ? iRef.current + 1 : 0;
+        setI(nextIndex);
+        console.log("Index updated to:", nextIndex);
+      }
     }
+  };
+  const toggleFaq = () => {
+    toggleDetection();
+    setShowFaq(!showFaq);
   };
   return (
     <main className="h-screen w-screen flex flex-col md:flex-row bg-white p-4 md:p-0">
+      {showFaq && (
+        <div className="absolute top-0 left-0 right-0 bottom-0 bg-white z-[1000] flex justify-center p-8 ">
+          <button onClick={toggleFaq} className="fixed top-5 right-5">
+            <span className="material-icons text-red-500 text-2xl md:text-3xl hover:text-red-700 hover:animate-pulse">
+              cancel
+            </span>
+          </button>
+          <article className="prose">
+            <h2 className="text-blue-500">RudeCaptcha</h2>
+            <h2>How to use it?</h2>
+
+            <p>1. Make sure your webcam/ front facing camera is on</p>
+            <p>
+              2. Copy the obscene hand gesture in the top right in front of the
+              camera
+            </p>
+            <Image
+              src="/makeGesture.jpeg" // Assuming '/makeGesture.jpeg' is correctly placed in your 'public' folder
+              alt="make gesture"
+              width={500} // Specify the width
+              height={300} // And the height
+              layout="responsive" // This makes the image scale nicely to the parent element's width
+            />
+
+            <p>
+              3. Sometimes the AI can't detect it straight away so move your
+              hand a bit.
+            </p>
+            <p>4. You will be asked to perform a new gesture</p>
+            <h2>FAQ</h2>
+            <h4>Why did you make this?</h4>
+            <p>answer</p>
+            <h4>Do you really think this will replace Captchas?</h4>
+            <p>No</p>
+            <h4>How does this work?</h4>
+            <p>
+              It uses the Tensorflow.js and the handpose and fingerpose
+              libraries
+            </p>
+            <h2>Contact</h2>
+            <p>
+              Got a question or comment? Contact me via the widget in the bottom
+              right
+            </p>
+            <p>
+              lorem ipsum Why do we use it? It is a long established fact that a
+              reader will be distracted by the readable content of a page when
+              looking at its layout. The point of using Lorem Ipsum is that it
+              has a more-or-less normal distribution of letters, as opposed to
+              using 'Content here, content here', making it look like readable
+              English. Many desktop publishing packages and web page editors now
+              use Lorem Ipsum as their default model text, and a search for
+              'lorem ipsum' will uncover many web sites still in their infancy.
+              Various versions have evolved over the years, sometimes by
+              accident, sometimes on purpose (injected humour and the like).
+              Where does it come from? Contrary to popular belief, Lorem Ipsum
+              is not simply random text. It has roots in a piece of classical
+              Latin literature from 45 BC, making it over 2000 years old.
+              Richard McClintock, a Latin professor at Hampden-Sydney College in
+              Virginia, looked up one of the more obscure Latin words,
+              consectetur, from a Lorem Ipsum passage, and going through the
+              cites of the word in classical literature, discovered the
+              undoubtable source. Lorem Ipsum comes from sections 1.10.32 and
+              1.10.33 of "de Finibus Bonorum et Malorum" (The Extremes of Good
+              and Evil) by Cicero, written in 45 BC. This book is a treatise on
+              the theory of ethics, very popular during the Renaissance. The
+              first line of Lorem Ipsum, "Lorem ipsum dolor sit amet..", comes
+              from a line in section 1.10.32. The standard chunk of Lorem Ipsum
+              used since the 1500s is reproduced below for those interested.
+              Sections 1.10.32 and 1.10.33 from "de Finibus Bonorum et Malorum"
+              by Cicero are also reproduced in their exact original form,
+              accompanied by English versions from the 1914 translation by H.
+              Rackham. Where can I get some? There are many variations of
+              passages of Lorem Ipsum available, but the majority have suffered
+              alteration in some form, by injected humour, or randomised words
+              which don't look even slightly believable. If you are going to use
+              a passage of Lorem Ipsum, you need to be sure there isn't anything
+              embarrassing hidden in the middle of text. All the Lorem Ipsum
+              generators on the Internet tend to repeat predefined chunks as
+              necessary, making this the first true generator on the Internet.
+              It uses a dictionary of over 200 Latin words, combined with a
+              handful of model sentence structures, to generate Lorem Ipsum
+              which looks reasonable. The generated Lorem Ipsum is therefore
+              always free from repetition, injected humour, or
+              non-characteristic words etc.{" "}
+            </p>
+            <div className=" flex items-center justify-center">
+              <button
+                onClick={toggleFaq}
+                className=" flex items-center justify-center mb-8 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-md shadow-md hover:shadow-lg transition duration-300 ease-in-out"
+              >
+                <span className="text-white material-icons mr-2 text-xl">
+                  cancel
+                </span>
+                CLOSE FAQ
+              </button>
+            </div>
+          </article>
+        </div>
+      )}
       <div className="flex-1 flex items-center justify-center">
         <div className="max-w-sm mx-auto shadow-lg rounded-lg overflow-hidden ">
           <div
@@ -271,15 +387,32 @@ export default function CapatchaUI() {
             style={{ minHeight: "4rem" }}
           >
             <div>
-              <h4 className="text-gray-100 text-sm">
-                {webcamLoading ? "Loading..." : "Make the Gesture"}
+              <h4 className="text-gray-100 text-sm ">
+                {webcamLoading
+                  ? "Loading..."
+                  : showTick
+                  ? "Loading..."
+                  : "Make the Gesture"}
               </h4>
               <h4 className="text-xl font-bold text-white">
-                {webcamLoading ? "RudeCaptcha" : urls[i].description}
+                {webcamLoading
+                  ? "RudeCaptcha"
+                  : showTick
+                  ? "Correct"
+                  : urls[i].description}
               </h4>
             </div>
-            {webcamLoading ? (
-              <div className="h-24 " />
+            {webcamLoading || showTick ? (
+              <div className="h-24  flex items-center justify-center">
+                <div className="pr-4">
+                  {/* <LoadingSpinner /> */}
+                  <p className="material-icons text-xl animate-spin">
+                    <span className="material-symbols-outlined text-2xl text-white">
+                      rotate_right
+                    </span>
+                  </p>
+                </div>
+              </div>
             ) : (
               <img
                 src={urls[i].url}
@@ -292,14 +425,25 @@ export default function CapatchaUI() {
           {/* Existing video and grid overlay */}
           <div className="relative h-64 bg-gray-100">
             {webcamLoading && (
-              <div className="h-full flex flex-col items-center justify-center ">
-                <h5>LOADING...</h5>
+              <div className="h-full flex flex-col items-center justify-center prose">
+                <h3>LOADING...</h3>
                 <h5>Initializing webcam...</h5>
                 <h5>Loading AI model...</h5>
-                <LoadingSpinner />
+                {/* <LoadingSpinner /> */}
+                <p className="material-icons  animate-spin ">
+                  <span className="material-symbols-outlined text-5xl">
+                    rotate_right
+                  </span>
+                </p>
               </div>
             )}
-
+            {showTick && (
+              <div className="absolute top-0 left-0 w-full h-full bg-transparent flex items-center justify-center backdrop-filter backdrop-blur-lg">
+                <div className="bg-white/50 h-24 w-24 flex items-center justify-center rounded-full  ">
+                  <p className="text-green-500 text-5xl ">✓</p>
+                </div>
+              </div>
+            )}
             <video
               ref={webcamRef}
               autoPlay
@@ -321,7 +465,9 @@ export default function CapatchaUI() {
           {/* Content block */}
           <div className="p-4">
             <p
-              className="text-gray-700 text-base overflow-hidden"
+              className={` text-base overflow-hidden   ${
+                showTick ? "text-white" : "text-gray-700"
+              }`}
               style={{
                 display: "-webkit-box",
                 WebkitBoxOrient: "vertical",
@@ -336,22 +482,30 @@ export default function CapatchaUI() {
           </div>
 
           {/* Buttons */}
-          <div className="px-4 pt-4 pb-2 flex justify-end space-x-3">
+          <div className="px-4 pt-4 pb-2 flex justify-start space-x-3">
             <button
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-              onClick={() => {
-                i < urls.length - 1 ? setI(i + 1) : setI(0);
-              }}
+              disabled={showTick}
+              className={`text-white font-bold py-2 px-2 rounded ${
+                showTick ? "text-white" : "text-gray-400 hover:bg-blue-50"
+              }`}
+              onClick={toggleFaq}
             >
-              Skip
+              <span className="material-icons text-gray-500 text-2xl">
+                help
+              </span>
             </button>
             <button
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+              disabled={showTick}
+              className={`text-white font-bold py-2 px-2 rounded ${
+                showTick ? "text-white" : "text-gray-400 hover:bg-blue-50"
+              }`}
               onClick={() => {
                 i < urls.length - 1 ? setI(i + 1) : setI(0);
               }}
             >
-              Start
+              <span className="material-icons text-gray-500 text-2xl">
+                autorenew
+              </span>
             </button>
           </div>
         </div>
@@ -366,26 +520,19 @@ export default function CapatchaUI() {
         urls={urls}
         i={i}
       />
-
-      {/* <p className="absolute bottom-10 left-48 ">
-        {isDetectionActive ? "detection on" : "detection off"}
-      </p> */}
-
-      {/* {isDetectionActive ? (
+      <div className="absolute bottom-10 left-24 z-1000">
+        <p>
+          {isDetectionActiveRef.current === true
+            ? "detection on"
+            : "detection off"}
+        </p>
         <button
-          className="bg-red-100 p-8 w-24 h-24 absolute bottom-10 left-24 "
-          onClick={() => setIsDetectionActive(false)}
+          onClick={toggleDetection}
+          className="bg-red-100 px-8 py-4 rounded  "
         >
-          STOP
+          {isDetectionActiveRef.current ? "STOP" : "START"}
         </button>
-      ) : (
-        <button
-          className="bg-red-100 p-8 w-24 h-24 absolute bottom-10 left-24"
-          onClick={() => setIsDetectionActive(true)}
-        >
-          START
-        </button>
-      )} */}
+      </div>
     </main>
   );
 }
