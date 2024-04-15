@@ -17,19 +17,22 @@ import React, { useRef, useEffect, useState } from "react";
 import IconButton from "@/components/iconbutton";
 import Modal from "@/components/modal";
 import { urls } from "@/utilites/urls";
+import Onboard from "@/components/onboard";
 //start btn shimmer YES but
 // hide icons before start is pressed yes
 //change text when start is active yes
 
 //blur on mobile YES
 
-//share
+//share YEs BUT need to change copy
 //og YES but needs update
 
 //more pics
 //more gestures
-// skip
+// skip YES
 //clean up
+
+// INRO
 
 export default function CapatchaUI() {
   const [webcamLoading, setWebcamLoading] = useState(true);
@@ -38,6 +41,7 @@ export default function CapatchaUI() {
   const isDetectionActiveRef = useRef(true);
   const [net, setNet] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [showOnboard, setShowOnboard] = useState(true);
 
   const toggleModal = () => {
     setShowModal(!showModal);
@@ -201,8 +205,12 @@ export default function CapatchaUI() {
     toggleDetection();
     setShowFaq(!showFaq);
   };
+
+  // screen record
+
   return (
     <main className="h-screen w-screen flex flex-col md:flex-row bg-white p-4 md:p-0">
+      {showOnboard && <Onboard setShowOnboard={setShowOnboard} />}
       {showFaq && <Faq toggleFaq={toggleFaq} />}
       {showModal && (
         <Modal

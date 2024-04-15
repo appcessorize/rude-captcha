@@ -28,7 +28,7 @@ function Onboard({ setShowOnboard }) {
   }, []);
 
   return (
-    <div className="w-full h-screen overflow-hidden ">
+    <div className="fixed inset-0 bg-red-100 bg-opacity-50 z-50 flex justify-center items-center p-8">
       <style>
         {`
           .splide__pagination .splide__pagination__page {
@@ -66,17 +66,22 @@ function Onboard({ setShowOnboard }) {
                 Unpaid labor. AI can defeat traditional captcha . AI cannit be
                 offensive
               </p>
+              <p>
+                Start by learning how to insult people from all over the world
+                WHY AND WHAT
+              </p>
             </div>
           </div>
         </SplideSlide>
         <SplideSlide className="w-screen h-screen bg-red-500 flex items-center justify-center flex-col">
           <div className="w-full md:min-w-md h-full flex items-center justify-center flex-col bg-yellow-500 ">
-            <p>Learn how to insult people from all over the world</p>
+            <p>HOW TO USE IT</p>
           </div>
         </SplideSlide>
         <SplideSlide className="w-screen h-screen  bg-orange-500 flex items-center justify-center flex-col">
           <div className="w-full md:min-w-md h-full flex items-center justify-center flex-col bg-white">
             <p>Start</p>
+            <h2>I'm not a robot box</h2>
             <button
               className="bg-black text-white p-4 rounded-lg"
               onClick={() => setShowOnboard(false)}
