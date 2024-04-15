@@ -81,7 +81,7 @@ function Onboard({ setShowOnboard }) {
         <SplideSlide className="w-screen h-screen  bg-orange-500 flex items-center justify-center flex-col">
           <div className="w-full md:min-w-md h-full flex items-center justify-center flex-col bg-white">
             <p>Start</p>
-            <h2>I'm not a robot box</h2>
+            <h2>I&apos;m not a robot box</h2>
             <button
               className="bg-black text-white p-4 rounded-lg"
               onClick={() => setShowOnboard(false)}
