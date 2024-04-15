@@ -15,15 +15,16 @@ import React, { useRef, useEffect, useState } from "react";
 // import LoadingSpinner from "@/components/loadingSpinner";
 // import APItems from "@/components/absolutelypositioneditems";
 import IconButton from "@/components/iconbutton";
-
+import Modal from "@/components/modal";
 import { urls } from "@/utilites/urls";
 //start btn shimmer YES but
-// hide icons before start is pressed
-//change text when start is active
+// hide icons before start is pressed yes
+//change text when start is active yes
 
 //blur on mobile YES
 
 //share
+//og YES but needs update
 
 //more pics
 //more gestures
@@ -36,6 +37,12 @@ export default function CapatchaUI() {
   const [showTick, setShowTick] = useState(false);
   const isDetectionActiveRef = useRef(true);
   const [net, setNet] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+
+  const toggleModal = () => {
+    setShowModal(!showModal);
+    toggleDetection();
+  };
   const toggleDetection = () => {
     isDetectionActiveRef.current = !isDetectionActiveRef.current;
     console.log("Detection toggled to:", isDetectionActiveRef.current);
@@ -197,6 +204,14 @@ export default function CapatchaUI() {
   return (
     <main className="h-screen w-screen flex flex-col md:flex-row bg-white p-4 md:p-0">
       {showFaq && <Faq toggleFaq={toggleFaq} />}
+      {showModal && (
+        <Modal
+          toggleModal={toggleModal}
+          toggleDetection={toggleDetection}
+          setShowModal={setShowModal}
+        />
+      )}
+
       <div className="flex-1 flex items-center justify-center">
         <div className="max-w-sm mx-auto shadow-lg rounded-lg overflow-hidden ">
           <div
@@ -270,17 +285,14 @@ export default function CapatchaUI() {
                 </div>
               </div>
             )}
-            <img
-              src="/midfingold.png"
-              className="w-full h-full object-cover z-100"
-            />
-            {/* <video
+
+            <video
               ref={webcamRef}
               autoPlay
               playsInline
               muted
               className="w-full h-full object-cover z-100"
-            /> */}
+            />
             {!webcamLoading && (
               <div className="absolute top-0 left-0 w-full h-full bg-transparent grid grid-cols-4 grid-rows-4 border border-transparent z-10">
                 {Array.from({ length: 16 }).map((_, idx) => (
@@ -320,7 +332,7 @@ export default function CapatchaUI() {
             <IconButton
               showTick={showTick}
               icon={" ios_share"}
-              onClick={() => alert("Share not implemented yet")}
+              onClick={toggleModal}
             />
             {startDetection && (
               <IconButton
@@ -345,21 +357,11 @@ export default function CapatchaUI() {
                 </button>
               )}
 
-              {/* {net &&
-                (startDetection ? (
-                  <></>
-                ) : (
-                  <button
-                    onClick={() => {
-                      runHandpose(net);
-                      setStartDetection(true);
-                    }}
-                    type="button"
-                    class="focus:outline-none text-white bg-red-500 hover:bg-red-700 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
-                  >
-                    Start
-                  </button>
-                ))} */}
+              <p className="absolute top-10">
+                {isDetectionActiveRef.current
+                  ? "detection active"
+                  : "no detection"}
+              </p>
             </div>
           </div>
         </div>

@@ -40,6 +40,22 @@ const Faq = ({ toggleFaq }) => {
         </p>
 
         <h2>Share</h2>
+        <a
+          href="https://www.facebook.com/sharer/sharer.php?u=https://rude-capt.vercel.app"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-block px-6 py-2 m-2 text-white bg-blue-600 hover:bg-blue-700 font-medium rounded"
+        >
+          Share on Facebook
+        </a>
+        <a
+          href="https://twitter.com/intent/tweet?url=https://rude-capt.vercel.app&text=Rude%20captcha%20uses%20AI%20to%20check%20if%20you're%20human"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-block px-6 py-2 m-2 text-white bg-black hover:bg-blue-600 font-medium rounded"
+        >
+          Share on X
+        </a>
         <h2>Contact</h2>
         <p>
           Got a question or comment? Contact me via the widget in the bottom
