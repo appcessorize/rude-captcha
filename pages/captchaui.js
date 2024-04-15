@@ -13,7 +13,22 @@ import Image from "next/image";
 import Faq from "@/components/faq";
 import React, { useRef, useEffect, useState } from "react";
 // import LoadingSpinner from "@/components/loadingSpinner";
-import APItems from "@/components/absolutelypositioneditems";
+// import APItems from "@/components/absolutelypositioneditems";
+import IconButton from "@/components/iconbutton";
+
+import { urls } from "@/utilites/urls";
+//start btn shimmer YES but
+// hide icons before start is pressed
+//change text when start is active
+
+//blur on mobile YES
+
+//share
+
+//more pics
+//more gestures
+// skip
+//clean up
 
 export default function CapatchaUI() {
   const [webcamLoading, setWebcamLoading] = useState(true);
@@ -51,9 +66,13 @@ export default function CapatchaUI() {
 
             // aspectRatio: { ideal: 1.777777778 },
           })
+
           .then((stream) => {
-            // runHandpose();
             setWebcamLoading(false);
+            // runHandpose();
+            // setTimeout(() => {
+            //   setWebcamLoading(false);
+            // }, 500);
             // If access is granted, set the video source to the webcam stream
             if (webcamRef.current) {
               webcamRef.current.srcObject = stream;
@@ -142,79 +161,6 @@ export default function CapatchaUI() {
     }
   };
 
-  const urls = [
-    {
-      description: "V Sign",
-      url: "/vSign.png",
-      GestureDescription: "vSign",
-      blurb:
-        "The obscene V sign, fingers up with palm inward, stems from medieval archers as defiance, now a rude gesture in the UK.",
-    },
-    {
-      description: "Thumbs Down",
-      url: "/thumbsDown.png",
-      GestureDescription: "thumbs_down",
-      blurb:
-        "The thumbs-down gesture, signifying disapproval or rejection, traces back to ancient Rome's gladiatorial combats, widely recognized across cultures today.",
-    },
-
-    {
-      description: "Thumbs Up",
-      url: "/thumbsUp.png",
-      GestureDescription: "thumbs_up",
-      blurb:
-        "Traditionally positive, the thumbs-up gesture can be obscene in certain cultures like Iran and Greece, symbolizing a disrespectful insult.",
-    },
-    {
-      description: "Moutza",
-      url: "/moutza.jpg",
-      GestureDescription: "moutza",
-      blurb:
-        "The Moutza, spreading open the fingers on one hand, hails from ancient Greece, signifying insult, commonly used in the Balkans.",
-    },
-    {
-      description: "Middle Finger",
-      url: "/midfingercar.jpg",
-      GestureDescription: "middle_finger_up",
-      blurb:
-        "The middle finger gesture, dating back to ancient Greece, symbolizes insult or anger, universally recognized as a sign of disrespect.",
-    },
-    {
-      description: "Wanker",
-      url: "https://media.istockphoto.com/id/182912888/photo/obscene-anti-social-behaviour.jpg?s=612x612&w=is&k=20&c=esk7pC1fVO4eKPakEatwYi-0wi45cj_mEGPMQ3szERM=",
-      GestureDescription: "closed_fist",
-      blurb:
-        'The "wanker" gesture, involving a fist-and-forearm motion, originates from British slang, signifying masturbation and used to mock or insult someone.',
-    },
-    {
-      description: "Bras d'honneur",
-      url: "/french.jpg",
-      GestureDescription: "closed_fist",
-      blurb:
-        "The Bras d'honneur or 'the Italian salute', originated in France, it's an insult akin to up yours with diverse cultural meanings.",
-    },
-    {
-      description: "Middle Finger",
-      url: "/midfinger.jpg",
-      GestureDescription: "middle_finger_up",
-      blurb:
-        "The middle finger gesture, dating back to ancient Greece, symbolizes insult or anger, universally recognized as a sign of disrespect.",
-    },
-    {
-      description: "Fig",
-      url: "/thumbfist.jpg",
-      GestureDescription: "closed_fist",
-      blurb:
-        "Originating from Roman times, the obscene fig gesture, thumb between fingers, signifies contempt, mainly used in Turkey and Russia.",
-    },
-    {
-      description: "Middle Finger",
-      url: "/midfingnews.jpg",
-      GestureDescription: "middle_finger_up",
-      blurb:
-        "The middle finger gesture, dating back to ancient Greece, symbolizes insult or anger, universally recognized as a sign of disrespect.",
-    },
-  ];
   const [i, setI] = useState(0);
   const iRef = useRef(i);
   useEffect(() => {
@@ -224,37 +170,6 @@ export default function CapatchaUI() {
   const [answer, setAnswer] = useState("no answer yet");
   const [answer2, setAnswer2] = useState("no answer2 yet");
   const [showFaq, setShowFaq] = useState(false);
-  //   const handleGestureRecognition = (answer, answer2) => {
-  //     console.log(
-  //       "called handleGestureRecognition",
-  //       urls[i].GestureDescription,
-  //       answer,
-  //       answer2
-  //     );
-  //     if (
-  //       urls[i].GestureDescription === answer ||
-  //       urls[i].GestureDescription === answer2
-  //     ) {
-  //       console.log("success");
-  //       //   setShowTick(true); // Show the tick mark
-
-  //       // Wait for 1.5 seconds before hiding the tick and moving to the next gesture
-
-  //       //   const nextIndex = i < urls.length - 1 ? i + 1 : 0;
-  //       // Hide the tick mark
-
-  //       // Move to the next gesture or reset
-
-  //       //   setI(nextIndex);
-  //       //   setI(i + 1);
-  //       // Reset answers
-  //       //   setAnswer("no answer yet");
-  //       //   setAnswer2("no answer2 yet");
-
-  //       // Optionally, re-enable detection here if you disabled it earlier
-  //       //   setIsDetectionActive(true);
-  //     }
-  //   };
   const handleGestureRecognition = (answer, answer2) => {
     if (isDetectionActiveRef.current) {
       if (
@@ -268,7 +183,7 @@ export default function CapatchaUI() {
           setShowTick(false);
           toggleDetection(); // This call re-enables detection
           console.log("Detection re-enabled.");
-        }, 2000);
+        }, 1500);
         const nextIndex = iRef.current < urls.length - 1 ? iRef.current + 1 : 0;
         setI(nextIndex);
         console.log("Index updated to:", nextIndex);
@@ -290,14 +205,14 @@ export default function CapatchaUI() {
           >
             <div>
               <h4 className="text-gray-100 text-sm ">
-                {webcamLoading
+                {webcamLoading || showTick
                   ? "Loading..."
-                  : showTick
-                  ? "Loading..."
+                  : !startDetection
+                  ? "Get Ready"
                   : "Make the Gesture"}
               </h4>
               <h4 className="text-xl font-bold text-white">
-                {webcamLoading
+                {webcamLoading || !startDetection
                   ? "RudeCaptcha"
                   : showTick
                   ? "Correct"
@@ -308,6 +223,7 @@ export default function CapatchaUI() {
               <div className="h-24  flex items-center justify-center">
                 <div className="pr-4">
                   {/* <LoadingSpinner /> */}
+
                   <p className="material-icons text-xl animate-spin">
                     <span className="material-symbols-outlined text-2xl text-white">
                       rotate_right
@@ -315,12 +231,14 @@ export default function CapatchaUI() {
                   </p>
                 </div>
               </div>
-            ) : (
+            ) : startDetection ? (
               <img
                 src={urls[i].url}
                 alt={urls[i].description}
                 className="h-24 border-white border-2"
               />
+            ) : (
+              <div className="h-24  flex items-center justify-center" />
             )}
           </div>
 
@@ -340,7 +258,13 @@ export default function CapatchaUI() {
               </div>
             )}
             {showTick && (
-              <div className="absolute top-0 left-0 w-full h-full bg-transparent flex items-center justify-center backdrop-filter backdrop-blur-lg">
+              <div
+                className="absolute top-0 left-0 w-full h-full bg-transparent flex items-center justify-center  "
+                style={{
+                  backdropFilter: "blur(12px)",
+                  WebkitBackdropFilter: "blur(12px)",
+                }}
+              >
                 <div className="bg-white/50 h-24 w-24 flex items-center justify-center rounded-full  ">
                   <p className="text-green-500 text-5xl ">✓</p>
                 </div>
@@ -377,63 +301,60 @@ export default function CapatchaUI() {
               }}
             >
               {webcamLoading
-                ? "Sick of having to prove to a robot you're human. AI isn't allowed to be offensive so won't be able to break this Captcha."
+                ? "Sick of having to prove to a robot you're human? AI isn't allowed to be offensive so won't be able to break this Captcha."
+                : !startDetection
+                ? " Make the obscene gesture indicated in the top right. Make sure your hand is visible to the webcam.  Press Start to begin."
                 : urls[i].blurb || <div className="h-14"></div>}
-              {/* //   {urls[i].blurb || <div className="h-14"></div>} */}
             </p>
           </div>
 
           {/* Buttons */}
           <div className="px-4 pt-4 pb-2 flex justify-start space-x-3">
-            <button
-              disabled={showTick}
-              className={`text-white font-bold py-2 px-2 rounded ${
-                showTick ? "text-white" : "text-gray-400 hover:bg-blue-50"
-              }`}
-              onClick={toggleFaq}
-            >
-              <span className="material-icons text-gray-500 text-2xl">
-                help
-              </span>
-            </button>
-            <button
-              disabled={showTick}
-              className={`text-white font-bold py-2 px-2 rounded ${
-                showTick ? "text-white" : "text-gray-400 hover:bg-blue-50"
-              }`}
+            <IconButton showTick={showTick} icon={"help"} onClick={toggleFaq} />
+            <IconButton
+              showTick={showTick}
+              icon={" ios_share"}
               onClick={() => alert("Share not implemented yet")}
-            >
-              <span className="material-icons text-gray-500 text-2xl">
-                ios_share
-              </span>
-            </button>
-            <button
-              disabled={showTick}
-              className={`text-white font-bold py-2 px-2 rounded ${
-                showTick ? "text-white" : "text-gray-400 hover:bg-blue-50"
-              }`}
-              onClick={() => {
-                i < urls.length - 1 ? setI(i + 1) : setI(0);
-              }}
-            >
-              <span className="material-icons text-gray-500 text-2xl">
-                autorenew
-              </span>
-            </button>
-            {net &&
-              (startDetection ? (
-                <></>
-              ) : (
+            />
+            {startDetection && (
+              <IconButton
+                showTick={showTick}
+                icon={"autorenew"}
+                onClick={() => {
+                  i > 0 ? setI(i - 1) : setI(urls.length - 1);
+                }}
+              />
+            )}
+            <div className=" w-full flex justify-end">
+              {net && !webcamLoading && !startDetection && (
                 <button
                   onClick={() => {
                     runHandpose(net);
                     setStartDetection(true);
                   }}
-                  className="text-white font-bold py-2 px-2 rounded bg-red-500"
+                  type="button"
+                  className="focus:outline-none text-white bg-red-500 hover:bg-red-700 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
                 >
-                  Start detect
+                  Start
                 </button>
-              ))}
+              )}
+
+              {/* {net &&
+                (startDetection ? (
+                  <></>
+                ) : (
+                  <button
+                    onClick={() => {
+                      runHandpose(net);
+                      setStartDetection(true);
+                    }}
+                    type="button"
+                    class="focus:outline-none text-white bg-red-500 hover:bg-red-700 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
+                  >
+                    Start
+                  </button>
+                ))} */}
+            </div>
           </div>
         </div>
       </div>
