@@ -209,7 +209,7 @@ export default function CapatchaUI() {
   // screen record
 
   return (
-    <main className="h-full w-full flex flex-col md:flex-row bg-white p-4 md:p-0 overflow-hidden">
+    <main className="h-screen w-full flex flex-col items-center justify-center md:flex-row bg-white p-4 md:p-0 overflow-hidden">
       {showOnboard && <Onboard setShowOnboard={setShowOnboard} />}
       {showFaq && <Faq toggleFaq={toggleFaq} />}
       {showModal && (
@@ -236,7 +236,7 @@ export default function CapatchaUI() {
               </h4>
               <h4 className="text-xl font-bold text-white">
                 {webcamLoading || !startDetection
-                  ? "RudeCaptcha"
+                  ? "rudeCAPTCHA"
                   : showTick
                   ? "Correct"
                   : urls[i].description}
@@ -359,7 +359,7 @@ export default function CapatchaUI() {
                     setStartDetection(true);
                   }}
                   type="button"
-                  className=" focus:outline-none text-white bg-red-500 hover:bg-red-700 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
+                  className=" focus:outline-none text-white bg-red-500 hover:bg-red-700 focus:ring-4 focus:ring-red-300 font-bold rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
                 >
                   Start
                 </button>

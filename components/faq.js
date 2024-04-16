@@ -1,5 +1,20 @@
 import Image from "next/image";
+import { useState } from "react";
 const Faq = ({ toggleFaq }) => {
+  const [clipboardState, setClipboardState] = useState({
+    text: "Clipboard",
+    icon: "content_copy",
+  });
+  const handleCopyToClipboard = () => {
+    const textToCopy = "Check out this great site!";
+    const urlToCopy = "https://rude-capt.vercel.app";
+    const fullText = `${textToCopy} ${urlToCopy}`;
+
+    navigator.clipboard
+      .writeText(fullText)
+      .then(() => setClipboardState({ text: "Copied", icon: "check_circle" }))
+      .catch((err) => console.error("Failed to copy text to clipboard", err));
+  };
   return (
     <div className="absolute top-0 left-0 right-0 bottom-0 bg-white z-[1000] flex justify-center p-8 ">
       <button onClick={toggleFaq} className="fixed top-5 right-5">
@@ -8,7 +23,7 @@ const Faq = ({ toggleFaq }) => {
         </span>
       </button>
       <article className="prose">
-        <h2 className="text-blue-500">RudeCaptcha</h2>
+        <h2 className="text-blue-500">rudeCAPTCHA</h2>
         <h2>How to use it?</h2>
 
         <p>1. Make sure your webcam/ front facing camera is on</p>
@@ -31,12 +46,24 @@ const Faq = ({ toggleFaq }) => {
         <p>4. You will be asked to perform a new gesture</p>
         <h2>FAQ</h2>
         <h4>Why did you make this?</h4>
-        <p>answer</p>
+        <p>
+          When you complete a CAPTCHA you are performing unpaid labor for a
+          globalized megacorp training an AI that will replace you.
+        </p>
+        <p>AI can defeat traditional CAPTCHA.</p>
+        <p>What it can&#39;t do is be offensive.</p>
+
+        <p>
+          it&#39;s interesting to break down language barriers and learn how to
+          insult people from all over the world
+        </p>
         <h4>Do you really think this will replace Captchas?</h4>
         <p>No</p>
         <h4>How does this work?</h4>
         <p>
-          It uses the Tensorflow.js and the handpose and fingerpose libraries
+          It uses the Tensorflow.js and the handpose and fingerpose libraries to
+          detect which handgesture you are making. Many thanks to the developers
+          of those libraries.
         </p>
 
         <h2>Share</h2>
@@ -44,7 +71,7 @@ const Faq = ({ toggleFaq }) => {
           href="https://www.facebook.com/sharer/sharer.php?u=https://rude-capt.vercel.app"
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-block px-6 py-2 m-2 text-white bg-blue-600 hover:bg-blue-700 font-medium rounded"
+          className="inline-block px-6 py-2 m-2 text-white bg-blue-600 hover:bg-blue-700 font-medium rounded no-underline hover:underline"
         >
           Share on Facebook
         </a>
@@ -52,40 +79,36 @@ const Faq = ({ toggleFaq }) => {
           href="https://twitter.com/intent/tweet?url=https://rude-capt.vercel.app&text=Rude%20captcha%20uses%20AI%20to%20check%20if%20you're%20human"
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-block px-6 py-2 m-2 text-white bg-black hover:bg-blue-600 font-medium rounded"
+          className="inline-block px-6 py-2 m-2 text-white bg-black hover:bg-gray-600 font-medium rounded no-underline hover:underline"
         >
-          Share on X
+          Share on <span className="font-bold font-serif">X</span>
         </a>
+        <button
+          className="inline-block px-6 py-2 m-2 text-white bg-red-500 hover:bg-red-600 font-medium rounded no-underline hover:underline"
+          onClick={handleCopyToClipboard}
+        >
+          <span className="material-icons text-sm mr-2">
+            {clipboardState.icon}
+          </span>
+          {clipboardState.text}
+        </button>
+        <h3>How to share on TikTok/Reels</h3>
+        <p>Please take a screen recording and then share it</p>
+
+        <h4>on iOS:</h4>
+        <p>
+          Go to{" "}
+          <span className="font-semibold">Settings &gt; Control Centre</span>{" "}
+          tap the Add button next to Screen Recording. Open Control Centre on
+          your iPhone, then wait for the three-second countdown. Exit Control
+          Centre to record your screen.
+        </p>
         <h2>Contact</h2>
         <p>
           Got a question or comment? Contact me via the widget in the bottom
           right
         </p>
-        <p>
-          lorem ipsum Why do we use it? It is a long established fact that a
-          reader will be distracted by the readable content of a page when
-          looking at its layout. The point of using Lorem Ipsum is that it has a
-          more-or-less normal distribution of letters, as opposed to generators
-          on the Internet tend to repeat predefined chunks as necessary, making
-          this the first true generator on the Internet. It uses a dictionary of
-          over 200 Latin words, combined with a handful of model sentence
-          structures, to generate Lorem Ipsum which looks reasonable. The
-          generated Lorem Ipsum is therefore always free from repetition,
-          injected humour, or non-characteristic words etc. generators on the
-          Internet tend to repeat predefined chunks as necessary, making this
-          the first true generator on the Internet. It uses a dictionary of over
-          200 Latin words, combined with a handful of model sentence structures,
-          to generate Lorem Ipsum which looks reasonable. The generated Lorem
-          Ipsum is therefore always free from repetition, injected humour, or
-          non-characteristic words etc. embarrassing hidden in the middle of
-          text. All the Lorem Ipsum generators on the Internet tend to repeat
-          predefined chunks as necessary, making this the first true generator
-          on the Internet. It uses a dictionary of over 200 Latin words,
-          combined with a handful of model sentence structures, to generate
-          Lorem Ipsum which looks reasonable. The generated Lorem Ipsum is
-          therefore always free from repetition, injected humour, or
-          non-characteristic words etc.
-        </p>
+
         <div className=" flex items-center justify-center">
           <button
             onClick={toggleFaq}
