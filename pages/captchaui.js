@@ -209,7 +209,7 @@ export default function CapatchaUI() {
   // screen record
 
   return (
-    <main className="h-screen w-screen flex flex-col md:flex-row bg-white p-4 md:p-0">
+    <main className="h-full w-full flex flex-col md:flex-row bg-white p-4 md:p-0 overflow-hidden">
       {showOnboard && <Onboard setShowOnboard={setShowOnboard} />}
       {showFaq && <Faq toggleFaq={toggleFaq} />}
       {showModal && (
