@@ -41,7 +41,7 @@ export default function CapatchaUI() {
   const isDetectionActiveRef = useRef(true);
   const [net, setNet] = useState(null);
   const [showModal, setShowModal] = useState(false);
-  const [showOnboard, setShowOnboard] = useState(true);
+  const [showOnboard, setShowOnboard] = useState(false);
 
   const toggleModal = () => {
     setShowModal(!showModal);
@@ -53,6 +53,7 @@ export default function CapatchaUI() {
   };
 
   const webcamRef = useRef(null);
+
   useEffect(() => {
     if (net !== null) {
       // Check if the browser supports the getUserMedia API
@@ -206,8 +207,45 @@ export default function CapatchaUI() {
     setShowFaq(!showFaq);
   };
 
-  // screen record
+  //experimental
+  const [videoPlaying, setVideoPlaying] = useState(false);
+  useEffect(() => {
+    const video = webcamRef.current;
+    if (video) {
+      const handleCanPlay = () => {
+        setWebcamLoading(false);
+        setVideoPlaying(true);
+        console.log("Video is ready to play.");
+      };
+      const handlePlaying = () => {
+        setVideoPlaying(true);
+        console.log("Video is playing.");
+      };
+      const handlePause = () => {
+        setVideoPlaying(false);
+        console.log("Video is paused.");
+      };
 
+      // Add event listeners
+      video.addEventListener("canplay", handleCanPlay);
+      video.addEventListener("playing", handlePlaying);
+      video.addEventListener("pause", handlePause);
+
+      return () => {
+        // Cleanup event listeners
+        video.removeEventListener("canplay", handleCanPlay);
+        video.removeEventListener("playing", handlePlaying);
+        video.removeEventListener("pause", handlePause);
+      };
+    }
+  }, [webcamRef, net]);
+
+  useEffect(() => {
+    if (!startDetection && videoPlaying) {
+      runHandpose(net);
+      setStartDetection(true);
+    }
+  }, [videoPlaying]);
   return (
     <main className="h-screen w-full flex flex-col items-center justify-center md:flex-row bg-white p-4 md:p-0 overflow-hidden">
       {showOnboard && <Onboard setShowOnboard={setShowOnboard} />}
@@ -352,7 +390,7 @@ export default function CapatchaUI() {
               />
             )}
             <div className=" w-full flex justify-end">
-              {net && !webcamLoading && !startDetection && (
+              {net && !webcamLoading && !startDetection && videoPlaying && (
                 <button
                   onClick={() => {
                     runHandpose(net);
@@ -365,11 +403,15 @@ export default function CapatchaUI() {
                 </button>
               )}
 
-              <p className="absolute top-10">
-                {isDetectionActiveRef.current
-                  ? "detection active"
-                  : "no detection"}
-              </p>
+              <div className="absolute top-10">
+                {webcamLoading ? (
+                  <p>Loading webcam...</p>
+                ) : videoPlaying ? (
+                  <p>Webcam is active and video is playing.</p>
+                ) : (
+                  <p>Webcam is ready but the video is paused.</p>
+                )}
+              </div>
             </div>
           </div>
         </div>
