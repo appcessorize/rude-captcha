@@ -240,12 +240,12 @@ export default function CapatchaUI() {
     }
   }, [webcamRef, net]);
 
-  useEffect(() => {
-    if (!startDetection && videoPlaying) {
-      runHandpose(net);
-      setStartDetection(true);
-    }
-  }, [videoPlaying]);
+  // useEffect(() => {
+  //   if (!startDetection && videoPlaying && net) {
+  //     runHandpose(net);
+  //     setStartDetection(true);
+  //   }
+  // }, [videoPlaying]);
   return (
     <main className="h-screen w-full flex flex-col items-center justify-center md:flex-row bg-white p-4 md:p-0 overflow-hidden">
       {showOnboard && <Onboard setShowOnboard={setShowOnboard} />}
