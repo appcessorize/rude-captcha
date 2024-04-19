@@ -20,6 +20,8 @@ import Modal from "@/components/modal";
 import { urls } from "@/utilites/urls";
 import Onboard from "@/components/onboard";
 import IntroOverlay from "@/components/introoverlay";
+
+import Toast from "@/components/toast";
 //start btn shimmer YES but
 // hide icons before start is pressed yes
 //change text when start is active yes
@@ -287,6 +289,7 @@ export default function CapatchaUI() {
   //     setStartDetection(true);
   //   }
   // }, [videoPlaying]);
+
   return (
     <main className="h-screen w-full flex flex-col items-center justify-center md:flex-row bg-white p-4 md:p-0 overflow-hidden">
       <p className="absolute top-10">
@@ -295,7 +298,11 @@ export default function CapatchaUI() {
         {isDetectionActiveRef.current ? "true" : "false"}
       </p>
       {showOnboard && <Onboard setShowOnboard={setShowOnboard} />}
-
+      {showHint && i === 0 && (
+        <div className="absolute bottom-5">
+          <Toast />
+        </div>
+      )}
       {showIntro && <IntroOverlay showIntro={showIntro} />}
       {showFaq && <Faq toggleFaq={toggleFaq} />}
       {showModal && (
@@ -307,14 +314,14 @@ export default function CapatchaUI() {
       )}
 
       <div className="flex-1 flex items-center justify-center">
-        {showHint && i === 0 && (
+        {/* {showHint && i === 0 && (
           <div className="absolute  bottom-2 md:bottom-20  flex w-1/2 justify-center items-center  text-center">
             <p className="text-sm">
               <span className="text-red-500 underline ">Hint:</span> Make the 🖕
               gesture to the webcam
             </p>
           </div>
-        )}
+        )} */}
 
         <div className="max-w-sm mx-auto shadow-lg rounded-lg overflow-hidden ">
           <div
