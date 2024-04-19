@@ -52,7 +52,11 @@ const Faq = ({ toggleFaq }) => {
         </p>
         <p>AI can defeat traditional CAPTCHA.</p>
         <p>What it can&#39;t do is be offensive.</p>
-
+        <p>It doesn&apos;t work</p>
+        <p>
+          Sometimes it takes a while for the AI model to load. Mobile problems
+          are often solved by turning off low power mode
+        </p>
         <p>
           it&#39;s interesting to break down language barriers and learn how to
           insult people from all over the world

@@ -1,5 +1,12 @@
 export const urls = [
   {
+    description: "Middle Finger",
+    url: "/midfingercar.jpg",
+    GestureDescription: "middle_finger_up",
+    blurb:
+      "The middle finger gesture, dating back to ancient Greece, symbolizes insult or anger, universally recognized as a sign of disrespect.",
+  },
+  {
     description: "V Sign",
     url: "/vSign.png",
     GestureDescription: "vSign",
@@ -12,6 +19,13 @@ export const urls = [
     GestureDescription: "thumbs_down",
     blurb:
       "The thumbs-down gesture, signifying disapproval or rejection, traces back to ancient Rome's gladiatorial combats, widely recognized across cultures today.",
+  },
+  {
+    description: "Middle finger down",
+    url: "https://upload.wikimedia.org/wikipedia/commons/e/e0/Fonkos1.jpg",
+    GestureDescription: "middle_finger_down",
+    blurb:
+      "In some Arab countries, e.g Egypt, the middle finger is lowered towards the palm and all other fingers are kept straight.",
   },
 
   {
@@ -28,13 +42,7 @@ export const urls = [
     blurb:
       "The Moutza, spreading open the fingers on one hand, hails from ancient Greece, signifying insult, commonly used in the Balkans.",
   },
-  {
-    description: "Middle Finger",
-    url: "/midfingercar.jpg",
-    GestureDescription: "middle_finger_up",
-    blurb:
-      "The middle finger gesture, dating back to ancient Greece, symbolizes insult or anger, universally recognized as a sign of disrespect.",
-  },
+
   {
     description: "Wanker",
     url: "https://media.istockphoto.com/id/182912888/photo/obscene-anti-social-behaviour.jpg?s=612x612&w=is&k=20&c=esk7pC1fVO4eKPakEatwYi-0wi45cj_mEGPMQ3szERM=",

@@ -9,6 +9,7 @@ import { thumbsDownGesture } from "../utilites/thumbsDownGesture";
 import { closedFistGesture } from "../utilites/closedFistGesture";
 import { closedFistNoFingersGesture } from "../utilites/closedFistNoFingersGesture";
 import { moutzaGesture } from "../utilites/moutzaGesture";
+import { middle_finger_down } from "../utilites/middleFingerDown";
 import Image from "next/image";
 import Faq from "@/components/faq";
 import React, { useRef, useEffect, useState } from "react";
@@ -18,6 +19,7 @@ import IconButton from "@/components/iconbutton";
 import Modal from "@/components/modal";
 import { urls } from "@/utilites/urls";
 import Onboard from "@/components/onboard";
+import IntroOverlay from "@/components/introoverlay";
 //start btn shimmer YES but
 // hide icons before start is pressed yes
 //change text when start is active yes
@@ -42,7 +44,7 @@ export default function CapatchaUI() {
   const [net, setNet] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [showOnboard, setShowOnboard] = useState(false);
-
+  const [showIntro, setShowIntro] = useState(true);
   const toggleModal = () => {
     setShowModal(!showModal);
     toggleDetection();
@@ -124,6 +126,7 @@ export default function CapatchaUI() {
 
       if (hand.length > 0) {
         const GE = new fp.GestureEstimator([
+          middle_finger_down,
           vSign,
           middleFingerUpGesture,
           thumbsUpGesture,
@@ -172,12 +175,28 @@ export default function CapatchaUI() {
       }
     }
   };
-
+  const [showHint, setShowHint] = useState(false);
   const [i, setI] = useState(0);
   const iRef = useRef(i);
   useEffect(() => {
     iRef.current = i; // Keep the ref current with the state
   }, [i]);
+
+  useEffect(() => {
+    if (i === 0 && startDetection) {
+      const timer = setTimeout(() => {
+        if (i === 0) {
+          // Check again if 'i' is still 0 after 3 seconds
+          console.log("show hint");
+          setShowHint(true);
+        }
+      }, 3000);
+
+      return () => clearTimeout(timer); // Cleanup function to clear the timer
+    }
+  }, [startDetection, i]); // Depend on 'startDetection' and 'i'
+
+  // show hide intro
 
   const [answer, setAnswer] = useState("no answer yet");
   const [answer2, setAnswer2] = useState("no answer2 yet");
@@ -240,6 +259,23 @@ export default function CapatchaUI() {
     }
   }, [webcamRef, net]);
 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowIntro(false);
+      console.log("Timer expired, set showIntro to false");
+    }, 5000);
+
+    // Check if webcamLoading is already false at the time of component mount or gets updated to false
+    if (!webcamLoading) {
+      clearTimeout(timer);
+      // setShowIntro(false);
+      console.log("Webcam finished loading, set showIntro to false");
+    }
+
+    // Cleanup function
+    return () => clearTimeout(timer);
+  }, [webcamLoading]); // Depend on webcamLoading so this effect re-runs if it changes
+
   // useEffect(() => {
   //   if (!startDetection && videoPlaying && net) {
   //     runHandpose(net);
@@ -249,6 +285,8 @@ export default function CapatchaUI() {
   return (
     <main className="h-screen w-full flex flex-col items-center justify-center md:flex-row bg-white p-4 md:p-0 overflow-hidden">
       {showOnboard && <Onboard setShowOnboard={setShowOnboard} />}
+
+      {showIntro && <IntroOverlay />}
       {showFaq && <Faq toggleFaq={toggleFaq} />}
       {showModal && (
         <Modal
@@ -259,6 +297,15 @@ export default function CapatchaUI() {
       )}
 
       <div className="flex-1 flex items-center justify-center">
+        {showHint && i === 0 && (
+          <div className="absolute  bottom-20 prose flex w-1/2 justify-center items-center  text-center">
+            <h3>
+              <span className="text-red-500 underline ">Hint:</span> Make the 🖕
+              gesture to the webcam
+            </h3>
+          </div>
+        )}
+
         <div className="max-w-sm mx-auto shadow-lg rounded-lg overflow-hidden ">
           <div
             className="flex justify-between items-center p-4 bg-blue-500"
@@ -397,35 +444,15 @@ export default function CapatchaUI() {
                     setStartDetection(true);
                   }}
                   type="button"
-                  className=" focus:outline-none text-white bg-red-500 hover:bg-red-700 focus:ring-4 focus:ring-red-300 font-bold rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
+                  className=" focus:outline-none hover:underline text-white bg-red-500 hover:bg-red-700 focus:ring-4 focus:ring-red-300 font-bold rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
                 >
                   Start
                 </button>
               )}
-
-              <div className="absolute top-10">
-                {webcamLoading ? (
-                  <p>Loading webcam...</p>
-                ) : videoPlaying ? (
-                  <p>Webcam is active and video is playing.</p>
-                ) : (
-                  <p>Webcam is ready but the video is paused.</p>
-                )}
-              </div>
             </div>
           </div>
         </div>
       </div>
-      {/* <APItems
-        answer={answer}
-        answer2={answer2}
-        startDetection={startDetection}
-        runHandpose={runHandpose}
-        net={net}
-        setStartDetection={setStartDetection}
-        urls={urls}
-        i={i}
-      /> */}
     </main>
   );
 }
