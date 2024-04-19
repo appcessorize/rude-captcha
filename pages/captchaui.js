@@ -42,7 +42,7 @@ export default function CapatchaUI() {
   const [webcamLoading, setWebcamLoading] = useState(true);
   const [startDetection, setStartDetection] = useState(false);
   const [showTick, setShowTick] = useState(false);
-  const isDetectionActiveRef = useRef(true);
+  const isDetectionActiveRef = useRef(false);
   // const isDetectionActiveRef = useRef(false);
   const [net, setNet] = useState(null);
   const [showModal, setShowModal] = useState(false);
@@ -428,7 +428,18 @@ export default function CapatchaUI() {
               />
             )}
             <div className=" w-full flex justify-end">
-              {net && !webcamLoading && !startDetection && videoPlaying && (
+              {startDetection && (
+                <button
+                  onClick={() => {
+                    toggleDetection();
+                  }}
+                  type="button"
+                  className=" focus:outline-none hover:underline text-white bg-red-500 hover:bg-red-700 focus:ring-4 focus:ring-red-300 font-bold rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
+                >
+                  Start
+                </button>
+              )}
+              {/* {net && !webcamLoading && !startDetection && videoPlaying && (
                 <button
                   onClick={() => {
                     runHandpose(net);
@@ -439,7 +450,7 @@ export default function CapatchaUI() {
                 >
                   Start
                 </button>
-              )}
+              )} */}
             </div>
           </div>
         </div>
