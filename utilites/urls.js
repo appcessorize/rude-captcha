@@ -8,6 +8,48 @@ export const urls = [
   },
   {
     description: "V Sign",
+    url: "/greekVSign.jpg",
+    GestureDescription: "vSign",
+    blurb:
+      "The obscene V sign, fingers up with palm inward, stems from medieval archers as defiance, now a rude gesture in the UK.",
+  },
+  {
+    description: "V Sign",
+    url: "/rikVSign.jpg",
+    GestureDescription: "vSign",
+    blurb:
+      "The obscene V sign, fingers up with palm inward, stems from medieval archers as defiance, now a rude gesture in the UK.",
+  },
+  {
+    description: "V Sign",
+    url: "/vSignSanta.jpg",
+    GestureDescription: "vSign",
+    blurb:
+      "The obscene V sign, fingers up with palm inward, stems from medieval archers as defiance, now a rude gesture in the UK.",
+  },
+  {
+    description: "Wanker",
+    url: "/markWanker.gif",
+    GestureDescription: "closed_fist",
+    blurb:
+      'The "wanker" gesture, involving a fist-and-forearm motion, originates from British slang, signifying masturbation and used to mock or insult someone.',
+  },
+  {
+    description: "Wanker",
+    url: "/jayWanker.gif",
+    GestureDescription: "closed_fist",
+    blurb:
+      'The "wanker" gesture, involving a fist-and-forearm motion, originates from British slang, signifying masturbation and used to mock or insult someone.',
+  },
+  {
+    description: "Wanker",
+    url: "/wankerGif.gif",
+    GestureDescription: "closed_fist",
+    blurb:
+      'The "wanker" gesture, involving a fist-and-forearm motion, originates from British slang, signifying masturbation and used to mock or insult someone.',
+  },
+  {
+    description: "V Sign",
     url: "/vSign.png",
     GestureDescription: "vSign",
     blurb:
@@ -51,11 +93,33 @@ export const urls = [
       'The "wanker" gesture, involving a fist-and-forearm motion, originates from British slang, signifying masturbation and used to mock or insult someone.',
   },
   {
+    description: "Fig",
+    url: "/figCartoon.jpg",
+    GestureDescription: "closed_fist",
+    blurb:
+      "Originating from Roman times, the obscene fig gesture, thumb between fingers, signifies contempt, mainly used in Turkey and Russia.",
+  },
+  {
+    description: "Fig",
+    url: "/figOldLady.jpg",
+    GestureDescription: "closed_fist",
+    blurb:
+      "Originating from Roman times, the obscene fig gesture, thumb between fingers, signifies contempt, mainly used in Turkey and Russia.",
+  },
+
+  {
     description: "Bras d'honneur",
     url: "/french.jpg",
     GestureDescription: "closed_fist",
     blurb:
       "The Bras d'honneur or 'the Italian salute', originated in France, it's an insult akin to up yours with diverse cultural meanings.",
+  },
+  {
+    description: "Fig",
+    url: "/figOldMan.jpg",
+    GestureDescription: "closed_fist",
+    blurb:
+      "Originating from Roman times, the obscene fig gesture, thumb between fingers, signifies contempt, mainly used in Turkey and Russia.",
   },
   {
     description: "Middle Finger",

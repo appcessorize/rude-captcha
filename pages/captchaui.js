@@ -306,12 +306,12 @@ export default function CapatchaUI() {
               <h4 className="text-gray-100 text-sm ">
                 {webcamLoading || showTick
                   ? "Loading..."
-                  : !startDetection
+                  : showStartButton
                   ? "Get Ready"
                   : "Make the Gesture"}
               </h4>
               <h4 className="text-xl font-bold text-white">
-                {webcamLoading || !startDetection
+                {webcamLoading || showStartButton
                   ? "rudeCAPTCHA"
                   : showTick
                   ? "Correct"
@@ -330,7 +330,7 @@ export default function CapatchaUI() {
                   </p>
                 </div>
               </div>
-            ) : startDetection ? (
+            ) : !showStartButton ? (
               <img
                 src={urls[i].url}
                 alt={urls[i].description}
@@ -404,8 +404,8 @@ export default function CapatchaUI() {
             >
               {webcamLoading
                 ? "Sick of having to prove to a robot you're human? AI isn't allowed to be offensive so won't be able to break this Captcha."
-                : !startDetection
-                ? " Make the obscene gesture indicated in the top right. Make sure your hand is visible to the webcam.  Press Start to begin."
+                : showStartButton
+                ? " Make the obscene gesture indicated in the top right. Make sure your hand is visible to the webcam.  Press Start to begin. ↘"
                 : urls[i].blurb || <div className="h-14"></div>}
             </p>
           </div>
