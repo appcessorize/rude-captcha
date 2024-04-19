@@ -48,7 +48,7 @@ export default function CapatchaUI() {
   const [showModal, setShowModal] = useState(false);
   const [showOnboard, setShowOnboard] = useState(false);
   const [showIntro, setShowIntro] = useState(true);
-
+  const [showStartButton, setShowStartButton] = useState(true);
   // debug
   const [detectingHand, setDetectingHand] = useState(false);
   const toggleModal = () => {
@@ -428,10 +428,11 @@ export default function CapatchaUI() {
               />
             )}
             <div className=" w-full flex justify-end">
-              {startDetection && (
+              {startDetection && showStartButton && (
                 <button
                   onClick={() => {
                     toggleDetection();
+                    setShowStartButton(false);
                   }}
                   type="button"
                   className=" focus:outline-none hover:underline text-white bg-red-500 hover:bg-red-700 focus:ring-4 focus:ring-red-300 font-bold rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
