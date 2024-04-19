@@ -1,6 +1,8 @@
 const IntroOverlay = () => {
   return (
-    <div className="fixed inset-0 bg-blue-500 z-50 flex  items-center  h-screen flex-col p-8">
+    <div
+      className={`fixed inset-0  z-50 flex  items-center  h-screen flex-col p-8 bg-blue-500`}
+    >
       <div className="max-w-md px-12 mt-20 flex justify-between flex-col h-full">
         <div className="prose ">
           <h1 className="text-white">rudeCAPTCHA</h1>

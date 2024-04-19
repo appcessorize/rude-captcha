@@ -41,10 +41,14 @@ export default function CapatchaUI() {
   const [startDetection, setStartDetection] = useState(false);
   const [showTick, setShowTick] = useState(false);
   const isDetectionActiveRef = useRef(true);
+  // const isDetectionActiveRef = useRef(false);
   const [net, setNet] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [showOnboard, setShowOnboard] = useState(false);
   const [showIntro, setShowIntro] = useState(true);
+
+  // debug
+  const [detectingHand, setDetectingHand] = useState(false);
   const toggleModal = () => {
     setShowModal(!showModal);
     toggleDetection();
@@ -125,6 +129,7 @@ export default function CapatchaUI() {
       const hand = await net.estimateHands(video);
 
       if (hand.length > 0) {
+        setDetectingHand(true);
         const GE = new fp.GestureEstimator([
           middle_finger_down,
           vSign,
@@ -268,13 +273,13 @@ export default function CapatchaUI() {
     // Check if webcamLoading is already false at the time of component mount or gets updated to false
     if (!webcamLoading) {
       clearTimeout(timer);
-      // setShowIntro(false);
+      setShowIntro(false);
       console.log("Webcam finished loading, set showIntro to false");
     }
 
     // Cleanup function
     return () => clearTimeout(timer);
-  }, [webcamLoading]); // Depend on webcamLoading so this effect re-runs if it changes
+  }, []); // Depend on webcamLoading so this effect re-runs if it changes
 
   // useEffect(() => {
   //   if (!startDetection && videoPlaying && net) {
@@ -284,9 +289,14 @@ export default function CapatchaUI() {
   // }, [videoPlaying]);
   return (
     <main className="h-screen w-full flex flex-col items-center justify-center md:flex-row bg-white p-4 md:p-0 overflow-hidden">
+      <p className="absolute top-10">
+        {detectingHand ? "detecting hand" : "not detecting hand"}||
+        detectionActiveRef:
+        {isDetectionActiveRef.current ? "true" : "false"}
+      </p>
       {showOnboard && <Onboard setShowOnboard={setShowOnboard} />}
 
-      {showIntro && <IntroOverlay />}
+      {showIntro && <IntroOverlay showIntro={showIntro} />}
       {showFaq && <Faq toggleFaq={toggleFaq} />}
       {showModal && (
         <Modal
@@ -298,11 +308,11 @@ export default function CapatchaUI() {
 
       <div className="flex-1 flex items-center justify-center">
         {showHint && i === 0 && (
-          <div className="absolute  bottom-20 prose flex w-1/2 justify-center items-center  text-center">
-            <h3>
+          <div className="absolute  bottom-2 md:bottom-20  flex w-1/2 justify-center items-center  text-center">
+            <p className="text-sm">
               <span className="text-red-500 underline ">Hint:</span> Make the 🖕
               gesture to the webcam
-            </h3>
+            </p>
           </div>
         )}
 
