@@ -182,26 +182,12 @@ export default function CapatchaUI() {
       }
     }
   };
-  const [showHint, setShowHint] = useState(false);
+
   const [i, setI] = useState(0);
   const iRef = useRef(i);
   useEffect(() => {
     iRef.current = i; // Keep the ref current with the state
   }, [i]);
-
-  useEffect(() => {
-    if (i === 0 && startDetection) {
-      const timer = setTimeout(() => {
-        if (i === 0) {
-          // Check again if 'i' is still 0 after 3 seconds
-          console.log("show hint");
-          setShowHint(true);
-        }
-      }, 3000);
-
-      return () => clearTimeout(timer); // Cleanup function to clear the timer
-    }
-  }, [startDetection, i]); // Depend on 'startDetection' and 'i'
 
   // show hide intro
 
@@ -283,12 +269,13 @@ export default function CapatchaUI() {
     return () => clearTimeout(timer);
   }, []); // Depend on webcamLoading so this effect re-runs if it changes
 
-  // useEffect(() => {
-  //   if (!startDetection && videoPlaying && net) {
-  //     runHandpose(net);
-  //     setStartDetection(true);
-  //   }
-  // }, [videoPlaying]);
+  useEffect(() => {
+    if (!startDetection && videoPlaying && net) {
+      console.log("start detection");
+      runHandpose(net);
+      setStartDetection(true);
+    }
+  }, [videoPlaying]);
 
   return (
     <main className="h-screen w-full flex flex-col items-center justify-center md:flex-row bg-white p-4 md:p-0 overflow-hidden">
@@ -298,11 +285,7 @@ export default function CapatchaUI() {
         {isDetectionActiveRef.current ? "true" : "false"}
       </p>
       {showOnboard && <Onboard setShowOnboard={setShowOnboard} />}
-      {showHint && i === 0 && (
-        <div className="absolute bottom-5">
-          <Toast />
-        </div>
-      )}
+
       {showIntro && <IntroOverlay showIntro={showIntro} />}
       {showFaq && <Faq toggleFaq={toggleFaq} />}
       {showModal && (
@@ -314,15 +297,6 @@ export default function CapatchaUI() {
       )}
 
       <div className="flex-1 flex items-center justify-center">
-        {/* {showHint && i === 0 && (
-          <div className="absolute  bottom-2 md:bottom-20  flex w-1/2 justify-center items-center  text-center">
-            <p className="text-sm">
-              <span className="text-red-500 underline ">Hint:</span> Make the 🖕
-              gesture to the webcam
-            </p>
-          </div>
-        )} */}
-
         <div className="max-w-sm mx-auto shadow-lg rounded-lg overflow-hidden ">
           <div
             className="flex justify-between items-center p-4 bg-blue-500"

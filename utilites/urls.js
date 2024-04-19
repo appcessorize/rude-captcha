@@ -4,7 +4,7 @@ export const urls = [
     url: "/midfingercar.jpg",
     GestureDescription: "middle_finger_up",
     blurb:
-      "The middle finger gesture, dating back to ancient Greece, symbolizes insult or anger, universally recognized as a sign of disrespect.",
+      "Copy the gesture pictured top right. Hint: Make the 🖕 gesture to the webcam. n.b if unresponsive the AI model may be loading",
   },
   {
     description: "V Sign",
